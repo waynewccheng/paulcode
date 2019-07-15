@@ -32,9 +32,9 @@ function t_dE_wcc(filter_number)
 
     % Folders for camera measurements
     filter_name = ['Filter_' filter_number];
-    foldername_sample = [filter_name '_sample'];  % For the filter spectra
-    foldername_white = [filter_name '_white'];    % For the 100% tranmittance
-    foldername_black = [filter_name '_black'];    % For the 0% tranmittance
+    foldername_sample = [path_to_rdata '\\' filter_name '_sample'];  % For the filter spectra
+    foldername_white = [path_to_rdata '\\' filter_name '_white'];    % For the 100% tranmittance
+    foldername_black = [path_to_rdata '\\' filter_name '_black'];    % For the 0% tranmittance
 
     % Folder for spectro-radiometer measurements
     foldername_spectro = [filter_name '_spectro_8xFast'];
@@ -76,7 +76,18 @@ function t_dE_wcc(filter_number)
 
     %% 2: Camera: calculate transmittance
     % Change folder to rawdata
-    cd(path_to_rdata);
+%    cd(path_to_rdata);
+%%
+% 
+%   for x = 1:10
+% 
+%   for x = 1:10
+%       disp(x)
+%   end
+% 
+%       disp(x)
+%   end
+% 
 
     % Compute the tranmittance based on the spatial average of numberofshots
     % images and the corresponding stat stored in img_ms.
