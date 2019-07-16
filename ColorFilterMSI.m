@@ -23,15 +23,9 @@ classdef ColorFilterMSI < handle
         function obj = ColorFilterMSI (patch_id)
             obj.id = patch_id;
             
-            obj.getDataMSI(patch_id);
             
-            for wl = 1:34
-                subplot(5,7,wl)
-                imagesc(squeeze(obj.vim_mean_array(wl,:,:)));
-                axis off
-                colorbar
-            end
-            ['done']
+            obj.showDataMSI_Transmittance(patch_id);
+
             
             return
             
@@ -101,9 +95,72 @@ classdef ColorFilterMSI < handle
         end
         
         function getDataMSI (obj,patch_id)
-            filename = sprintf('input\\Filter_%02d\\Filter_%02d_sample\\vim_mean_array.mat',patch_id,patch_id);
+ %           filename = sprintf('.\\input\\Filter_%02d\\Filter_%02d_sample\\vim_mean_array.mat',patch_id,patch_id)
+            filename = sprintf('./input/Filter_%02d/Filter_%02d_sample/vim_mean_array.mat',patch_id,patch_id)
             load(filename,'vim_mean_array')
             obj.vim_mean_array = vim_mean_array;
+        end
+        
+        function showDataMSI (obj,patch_id,name)
+            
+ %           filename = sprintf('.\\input\\Filter_%02d\\Filter_%02d_sample\\vim_mean_array.mat',patch_id,patch_id)
+            filename = sprintf('./input/Filter_%02d/Filter_%02d_%s/vim_mean_array.mat',patch_id,patch_id,name)
+            load(filename,'vim_mean_array')
+            
+            wl_array = 380:10:780;
+            for wl = 1:34
+                subplot(5,7,wl)
+                
+                vvname = sprintf('%s(wl,:,:)','vim_mean_array');
+                vv = eval(vvname);
+                im = squeeze(vv);
+                imagesc(im)
+                axis off
+                axis image
+                colorbar
+                title(sprintf('%d',wl_array(wl)))
+            end
+    
+        end
+     
+        function showDataMSI_Transmittance (obj,patch_id)
+            
+            name = 'sample';
+            filename = sprintf('./input/Filter_%02d/Filter_%02d_%s/vim_mean_array.mat',patch_id,patch_id,name)
+            load(filename,'vim_mean_array')
+            v_sample = vim_mean_array;
+            
+            name = 'black';
+            filename = sprintf('./input/Filter_%02d/Filter_%02d_%s/vim_mean_array.mat',patch_id,patch_id,name)
+            load(filename,'vim_mean_array')
+            v_black = vim_mean_array;
+
+            name = 'white';
+            filename = sprintf('./input/Filter_%02d/Filter_%02d_%s/vim_mean_array.mat',patch_id,patch_id,name)
+            load(filename,'vim_mean_array')
+            v_white = vim_mean_array;
+            
+            vt = (v_sample-v_black)./(v_white-v_black);
+            
+            %% show the subplots
+            figure('units','normalized','outerposition',[0 0 1 1])
+            
+            wl_array = 380:10:780;
+            for wl = 1:41
+                subplot(6,7,wl)
+                
+                vvname = sprintf('%s(wl,:,:)','vt');
+                vv = eval(vvname);
+                im = squeeze(vv);
+                imagesc(im)
+                axis off
+                axis image
+                colorbar
+                title(sprintf('%d',wl_array(wl)))
+            end
+            
+            saveas(gcf,sprintf('transmittance_%d.tif',patch_id))
+            close all
         end
         
         function show3Spectra (obj)
