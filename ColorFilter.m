@@ -55,10 +55,12 @@ classdef ColorFilter < handle
         end
 
         function do_msi (obj)
+            
+            obj.showDataMSI('transmittanceMSI')
             obj.showDataMSI('vim_mean_array_sample')
             obj.showDataMSI('vim_mean_array_white')
             obj.showDataMSI('vim_mean_array_black')
-            obj.showDataMSI('transmittanceMSI')
+            
         end
                 
         function do_truth (obj)
@@ -111,7 +113,7 @@ classdef ColorFilter < handle
             plot(obj.wavelength_range_pr730,obj.spectra_mean(:,3),'-b')
             % too large for 34 subplots
             % legend('Sample','100%','0%')
-            axis([380 780 0 8e-4])
+            %axis([380 780 0 8e-4])
         end
         
         function calcTransmittance (obj)
@@ -145,6 +147,7 @@ classdef ColorFilter < handle
             obj.vim_mean_array_black = vim_mean_array;
             
             obj.transmittanceMSI = ...
+                100 * ...
                 (obj.vim_mean_array_sample - obj.vim_mean_array_black)./ ...
                 (obj.vim_mean_array_white - obj.vim_mean_array_black);
             
@@ -165,9 +168,20 @@ classdef ColorFilter < handle
                 vv = eval(vvname);
                 im = squeeze(vv);
                 imagesc(im)
-                axis off
+
+                % calculate the mean and std
+                vv1 = reshape(im,size(im,1)*size(im,2),1);
+                vv_mean = mean(vv1);
+                vv_std = std(vv1);
+                
+                % axis off
+                set(gca,'xtick',[])
+                set(gca,'xticklabel',[])
+                set(gca,'ytick',[])
+                set(gca,'yticklabel',[])
                 axis image
-                title(sprintf('%d (%.1f%%)',wl_array(wl),wl_weighting(wl)*100))
+                title(sprintf('%d (%.2f%%)',wl_array(wl),wl_weighting(wl)*100))
+                xlabel(sprintf('%.4f, %.4f',vv_mean,vv_std))
                 colorbar
             end
             
@@ -194,7 +208,7 @@ classdef ColorFilter < handle
                 plot(obj.wavelength_range_pr730,obj.spectra(shot,:,3),'-b')
                 % too large when showing 34 subplots
                 % legend('Sample','100%','0%')
-                axis([380 780 0 8e-4])
+                %axis([380 780 0 8e-4])
             end
         end
         
