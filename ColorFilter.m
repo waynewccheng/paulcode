@@ -15,12 +15,15 @@ classdef ColorFilter < handle
         vim_mean_array_white
         vim_mean_array_black
         transmittanceMSI
-        list_patch = [3 24 34 39 40 43 46 48 51 52 56 57 59 60 68 71 77 85 88 91 93 95 97 99 310 316 336 337 342 347 356 360 389 398];
 
         % where to save the files?
         finding_path = 'finding';
     end
     
+    properties (Constant)
+        list_patch = [3 24 34 39 40 43 46 48 51 52 56 57 59 60 68 71 77 85 88 91 93 95 97 99 310 316 336 337 342 347 356 360 389 398];
+    end
+
     methods
         
         function obj = ColorFilter (patch_id)
@@ -359,8 +362,10 @@ classdef ColorFilter < handle
     
     %% use these static methods to go through the 34 patches
     methods (Static)
+
         
-        function test
+        %% generate 5 plots for each patch
+        function show5plots
             
             ColorFilter.do_it_for_all('show3Spectra');
             ColorFilter.do_it_for_all('showSpectraMean');
@@ -377,7 +382,8 @@ classdef ColorFilter < handle
             % where to save the files?
             finding_path = 'finding';
             
-            input_file_list = ColorFilter.getInputFileList();
+            %input_file_list = ColorFilter.getInputFileList();
+            input_file_list = ColorFilter.list_patch;
             
             figure('units','normalized','outerposition',[0 0 1 1])
             hold on
