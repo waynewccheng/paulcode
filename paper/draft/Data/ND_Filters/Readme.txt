@@ -30,5 +30,10 @@ col 3: reproducibility uncertainties on Delta E
 col 4: total uncertainty (sqrt of sum of square of col 2 and col 3)
 col 5: expanded uncertainty: 2 * col 4
 
+Lin_reg_cam: linear regression parameters for each wavelength, the spectrometer mesasurements is the truth, it's a weighed linear interpolation using the total uncertainty on the camera measurements
+col 1: slope
+col 2: intercept
+col 3: rmse
+
 
 
