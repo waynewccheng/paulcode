@@ -1,0 +1,6 @@
+KWOD01RegPosBW10VarShutterTime,
+KWOD02RegPosBW10VarShutterTime,
+KWOD03RegPosBW10VarShutterTime,
+KWOD06RegPosBW10VarShutterTime,
+KWOD1RegPosBW10VarShutterTime,
+KWOD2RegPosBW10VarShutterTime,
