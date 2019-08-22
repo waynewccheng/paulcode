@@ -10,11 +10,15 @@ T_Spectro_m: temporal mean over 10 measured spectra
 T_Spectro_s: temporal std dev over 10 measured spectra, total uncertainty
 41 wavelengths x 6 neutral density filters
 
+T_Spectro_cmp: T Spectro data, value, 1 X sigma, 2 X sigma (3 col)
+
 Cam_m: camera spatial averages, mean values over 10 measured spectra
 41 wavelengths x 6 neutral density filters
 
 Cam_s: camera spatial averages, std dev values over 10 measured spectra, total uncertainty
 41 wavelengths x 6 neutral density filters
+
+Cam_T_cmp: cam data, value, 1 X sigma, 2 X sigma (3 col)
 
 LAB_spectro_Kodak_ND, LAB_cam_Kodak_ND: 6 neutral density filters x 15 columns
 col 1:3: L, a, b
