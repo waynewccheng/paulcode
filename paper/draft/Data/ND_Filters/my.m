@@ -40,11 +40,11 @@ Cam_T_s = csvread('Cam_T_s.txt')
 Cam_T_cmp = csvread('Cam_T_cmp.txt')
 T_Spectro_m = csvread('T_Spectro_m.txt')
 T_Spectro_s = csvread('T_Spectro_s.txt')
-T_Spectro_cmp = csvread('True_T_cmp.txt')
-LAB_cam_KW_ColFilters = csvread('LAB_cam_KW_ColFilters.txt')
-LAB_spectro_KW_ColFilters = csvread('LAB_spectro_KW_ColFilters.txt')
+T_Spectro_cmp = csvread('T_Spectro_cmp.txt')
+LAB_cam_KW_ND = csvread('LAB_cam_Kodak_ND.txt')
+LAB_spectro_KW_ND = csvread('LAB_spectro_Kodak_ND.txt')
 
-fid = fopen('Names_KW_ColFilters.txt');
+fid = fopen('Names_Kodak_ND.txt');
 txt = textscan(fid,'%s','delimiter','\n'); 
 fclose(fid)
 str = txt{1}
@@ -57,5 +57,5 @@ end
 legend(str')
 xlabel('Wavelength (nm)')
 ylabel('Transmittance')
-title('Kodak Wratten Color Filters')
+title('Kodak ND Filters')
 axis([380  780 0 1])
