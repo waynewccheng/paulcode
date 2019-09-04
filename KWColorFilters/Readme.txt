@@ -97,7 +97,7 @@ Filter_KW47BW10, Filter_KW47bBW10, Filter_KW47cBW10, ..Filter_KW47jBW10
 * expanded_uncert calls f_expanded_uncert and  f_lab_array_tbl
 
 	Applies the unceratinty issued from the reproducibility experiements to the filters
-	save results in "Results_KW_Filters" in csv and matalbe formats
+	save results in "Results_KW_Filters" in csv and matlab formats
 
 	Names_KW_ColFilters.txt
 	filter_list (Names_KW_ColFilters)
