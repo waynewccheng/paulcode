@@ -53,7 +53,7 @@ plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl
 plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'on', 'Filter_KW47eBW10', filter_list, fld_name);
 
 % Boxplot
-boxplot_dE(lab_array_tbl, lab_spectro_cmp, 'on', filter_list, fld_name);
+statgraph_dE(lab_array_tbl, lab_spectro_cmp, 'on', filter_list, fld_name);
 
 
 %% 3: Functions
@@ -61,7 +61,7 @@ function plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, uncer
 
     fig1 = figure('units','normalized','outerposition',[0 0 1 1]);
     fig2 = figure('units','normalized','outerposition',[0 0 1 1]);  
-
+    
     j = 2;
     for i = 1:n_filters
 
@@ -81,8 +81,9 @@ function plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, uncer
 
         xlabel('\lambda (nm)'); ylabel('T');
 
-        figure(fig2); axis([350 800 -0.1 1]);
-        errorbar(t_spectro_cmp(1:10:end, 1), t_spectro_cmp(1:10:end, j), 2*t_spectro_cmp(1:10:end, j+1), '.-', 'Color', c); hold on;
+        figure(fig2); axis([350 800 -0.1 1.1]);
+        errorbar(t_spectro_cmp(1:10:end, 1), t_spectro_cmp(1:10:end, j), 2*t_spectro_cmp(1:10:end, j+1), '.-', 'Color', c); 
+        hold on;
         switch uncert_opt
             case 'sigma'
                 errorbar(t_cam_cmp(:, 1), t_cam_cmp(:, j), 2*t_cam_cmp(:, j+1), '--', 'Color', c);
@@ -90,10 +91,10 @@ function plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, uncer
                 errorbar(t_cam_cmp(:, 1), t_cam_cmp(:, j), t_cam_cmp(:, j+4), '--', 'Color', c); % k = 2 already included
         end
         xlabel('\lambda (nm)'); ylabel('T');
-
+        
         j = j + 5;
     end
-
+    
     % Save figures in tif format
     switch save_opt
         case 'on'
@@ -125,6 +126,8 @@ function plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_
             errorbar(t_cam_cmp(:, 1), t_cam_cmp(:, j), t_cam_cmp(:, j+4), '--', 'Color', 'r'); % k = 2 already included
     end
     xlabel('\lambda (nm)'); ylabel('T');
+%     legend('T_S', 'T_{SA}', 'Location','northwest');
+    legend('T_{Spectro}', 'T_{Cam}', 'Location','northwest');
     axis([350 800 -0.1 1.1]);
     
     figure(fig2);
@@ -147,7 +150,7 @@ function plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_
 
 end
 
-function boxplot_dE(lab_array_tbl, lab_spectro_cmp,  save_opt, filter_list, fld_name)
+function statgraph_dE(lab_array_tbl, lab_spectro_cmp,  save_opt, filter_list, fld_name)
 
     % Delta E, a bit different than in f_deltaE, can treat lists
     DeltaE = @(LAB_1, LAB_2) sqrt((LAB_1(:, 1) - LAB_2(:, 1)).^2 + ...    % L
@@ -170,10 +173,19 @@ function boxplot_dE(lab_array_tbl, lab_spectro_cmp,  save_opt, filter_list, fld_
     fig1 = figure('units','normalized','outerposition',[0 0 1 1]);
     figure(fig1); boxplot(dE_array, filter_list);
     
-    % Save figure in tif format
+    fig2 = figure('units','normalized','outerposition',[0 0 1 1]);
+    figure(fig2); 
+    
+    for i = 1:n_filters
+        subplot(2, 3, i);
+        histogram(dE_array(:, i));
+    end
+    
+    % Save figures in tif format
     switch save_opt
         case 'on'
             saveas(fig1,[fld_name '\KW_Filters_DeltaE_Bxplt.tif']);
+            saveas(fig2,[fld_name '\KW_Filters_DeltaE_Histo.tif']);
         case 'off'
     end
     
