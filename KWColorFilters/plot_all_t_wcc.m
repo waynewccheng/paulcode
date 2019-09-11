@@ -6,8 +6,12 @@ close all;
 clearvars;
 %% 1: Load filter results, includes Perkin Elmer Lambda 1050 measurements
 % Filter names
-fld_name = 'output\Results_KW_Filters';
-load([fld_name '\Names_KW_ColFilters'],'filter_list');
+% fld_name = 'output\Results_KW_Filters';
+% load([fld_name '\Names_KW_ColFilters'],'filter_list');
+fld_name = 'output\Results_Rosco_Filters';
+load([fld_name '\Names_Rosco_ColFilters'],'filter_list');
+filter_list(24:28) = [];
+
 n_filters = size(filter_list, 2);
 
 % Transmittance Spectro
@@ -44,16 +48,25 @@ pe_spectro(:, 1) = tmp(:, 1);
 % Save curves of not: 'on' or 'off'
 
 % All filters
-plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, 'expanded', 'on', fld_name, n_filters); % unceratinty choice: 'sigma' or 'expanded'
+plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, 'expanded', 'off', fld_name, n_filters); % unceratinty choice: 'sigma' or 'expanded'
 
-% KW32
-plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'on', 'Filter_KW32eBW10', filter_list, fld_name);
+% CIE LAB space
+plot_all_cielab(lab_spectro_cmp, 'off', fld_name, n_filters);
 
-% KW47
-plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'on', 'Filter_KW47eBW10', filter_list, fld_name);
+% % KW32
+% plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'on', 'Filter_KW32eBW10', filter_list, fld_name);
+% 
+% % KW47
+% plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'on', 'Filter_KW47eBW10', filter_list, fld_name);
+
+% Rosco Filters
+plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'off', 'Filter_Rosco48BW10', filter_list, fld_name);
+
+% Rosco Filters
+plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, 'expanded', 'off', 'Filter_Rosco24BW10', filter_list, fld_name);
 
 % Boxplot
-statgraph_dE(lab_array_tbl, lab_spectro_cmp, 'on', filter_list, fld_name);
+statgraph_dE(lab_array_tbl, lab_spectro_cmp, DE_cmp, 'off', filter_list, fld_name);
 
 
 %% 3: Functions
@@ -71,7 +84,7 @@ function plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, uncer
         % Graphic
         figure(fig1); axis([350 800 -0.1 1]);
         plot(t_spectro_cmp(:, 1), t_spectro_cmp(:, j), '.-', 'Color', c); hold on;
-        plot(pe_spectro(:, 1), pe_spectro(:, i+1)/100, '-', 'Color', c);
+%         plot(pe_spectro(:, 1), pe_spectro(:, i+1)/100, '-', 'Color', c);
         switch uncert_opt
             case 'sigma'
                 errorbar(t_cam_cmp(:, 1), t_cam_cmp(:, j), 2*t_cam_cmp(:, j+1), '--', 'Color', c);
@@ -103,6 +116,30 @@ function plot_all_t(t_spectro_cmp, t_cam_cmp, pe_spectro, lab_spectro_cmp, uncer
         case 'off'
     end
     
+end
+
+function plot_all_cielab(lab_cam_cmp, save_opt, fld_name, n_filters)
+
+    fig1 = figure; 
+    
+    for i = 1:n_filters
+        
+        % Color
+        c = double(lab2rgb(lab_cam_cmp(i, 1:5:11),'OutputType','uint8'))/255;
+        
+        % Graphics
+        figure(fig1);
+        scatter3(lab_cam_cmp(i, 11), lab_cam_cmp(i, 6), lab_cam_cmp(i, 1), 'MarkerEdgeColor', c, 'LineWidth', 2); hold on; 
+        xlabel('b^*'); ylabel('a^*'); zlabel('L^*');
+        
+        % Save figures in tif format
+        switch save_opt
+            case 'on'
+                saveas(fig2,[fld_name '\CIELABSpace.tif']);
+            case 'off'
+        end
+    end
+
 end
 
 function plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_array_tbl, DE_cmp, uncert_opt, save_opt, filter_name, filter_list, fld_name)
@@ -150,13 +187,16 @@ function plot_t_lab(t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, lab_
 
 end
 
-function statgraph_dE(lab_array_tbl, lab_spectro_cmp,  save_opt, filter_list, fld_name)
+function statgraph_dE(lab_array_tbl, lab_spectro_cmp, DE_cmp, save_opt, filter_list, fld_name)
 
     % Delta E, a bit different than in f_deltaE, can treat lists
     DeltaE = @(LAB_1, LAB_2) sqrt((LAB_1(:, 1) - LAB_2(:, 1)).^2 + ...    % L
     (LAB_1(:, 2) - LAB_2(:, 2)).^2 + ...                                  % a
     (LAB_1(:, 3) - LAB_2(:, 3)).^2);                                      % b
 
+    % To get filter ID
+    id_end = cell2mat(strfind(filter_list, 'BW10'));
+    
     % Storage
     n_filters = size(filter_list, 2);
     dE_array = zeros(676*844, n_filters);
@@ -166,20 +206,49 @@ function statgraph_dE(lab_array_tbl, lab_spectro_cmp,  save_opt, filter_list, fl
     lab_spectro_array = permute(repmat(tmp', 1, 1, size(lab_array_tbl, 1)), [3 1 2]);
     
     for i = 1:n_filters
-        dE_array(:, i) = DeltaE(lab_array_tbl(:, :, i), lab_spectro_array(:, :, i));
+        id{i} = ['# ' filter_list{i}(13:id_end(i)-1)];
+%         id{i} = ['# ' filter_list{i}(10:id_end(i)-1)];
+        dE_array(:, i) = log(DeltaE(lab_array_tbl(:, :, i), lab_spectro_array(:, :, i)));
     end
 
     % Graphics
     fig1 = figure('units','normalized','outerposition',[0 0 1 1]);
     figure(fig1); boxplot(dE_array, filter_list);
+    xlabel('Rosco Filter');
+%     xlabel('KW Filter');
+    xticks(1:n_filters);
+    xlim([0 n_filters+1]);
+    xticklabels(id);
+    xtickangle(45);
+    ylabel('Log(\Delta E_{ab}^*)');
     
     fig2 = figure('units','normalized','outerposition',[0 0 1 1]);
     figure(fig2); 
     
     for i = 1:n_filters
-        subplot(2, 3, i);
+        subplot(floor(sqrt(n_filters)), ceil(sqrt(n_filters))+1, i);
         histogram(dE_array(:, i));
     end
+    
+    fig3 = figure('units','normalized','outerposition',[0 0 1 1]);
+    figure(fig3); 
+    
+    for i = 1:n_filters
+        subplot(floor(sqrt(n_filters)), ceil(sqrt(n_filters))+1, i);
+        qqplot(dE_array(:, i));
+    end
+    
+    figure;
+    for i = 1:n_filters
+        errorbar(i, DE_cmp(i, 1), DE_cmp(i, 5), '.k'); hold on;
+    end
+    ylabel('\Delta E_{ab}^* \pm 2*U_{\Delta E_{ab}^*}');
+    xlabel('Rosco Filter');
+%     xlabel('KW Filter');
+    xticks(1:n_filters);
+    xlim([0 n_filters+1]);
+    xticklabels(id);
+    xtickangle(45);
     
     % Save figures in tif format
     switch save_opt

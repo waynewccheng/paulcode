@@ -3,8 +3,7 @@
 % and expanded uncertaintites
 
 % 08-30-19: First code
-    
-% function [t_spectro_cmp, t_cam_cmp, lab_spectro_cmp, lab_cam_cmp, DE_cmp] = f_expanded_uncert(filter_list_repro, filter_list, f_name)
+
 function f_expanded_uncert(filter_list_repro, filter_list, f_name)
 
     %% 1: Gather results
@@ -84,13 +83,15 @@ function f_expanded_uncert(filter_list_repro, filter_list, f_name)
     mkdir(fld_name);
 
     % Names of filters
+    name = f_name(9:end-8);
     str_tbl = string(filter_list);
-    filepath = fopen([fld_name '\Names_KW_ColFilters.txt'],'w');
+
+    filepath = fopen([fld_name '\Names_' name '_ColFilters.txt'],'w');
     fprintf(filepath,'%s,\n',str_tbl{:});
     fclose(filepath);
     
-    save([fld_name '\Names_KW_ColFilters'],'filter_list');
-        
+    save([fld_name '\Names_' name '_ColFilters'],'filter_list');
+    
     % Transmittances
     csvwrite([fld_name '\t_spectro_cmp.txt'], t_spectro_cmp);
     csvwrite([fld_name '\t_cam_cmp.txt'], t_cam_cmp);
@@ -99,9 +100,9 @@ function f_expanded_uncert(filter_list_repro, filter_list, f_name)
     save([fld_name '\t_cam_cmp'],'t_cam_cmp');
     
     % CIELAB results
-    csvwrite([fld_name '\DE_KW_ColFilters.txt'], DE_cmp);
-    csvwrite([fld_name '\LAB_spectro_KW_ColFilters.txt'], lab_spectro_cmp);
-    csvwrite([fld_name '\LAB_cam_KW_ColFilters.txt'], lab_cam_cmp);
+    csvwrite([fld_name '\DE_' name '_ColFilters.txt'], DE_cmp);
+    csvwrite([fld_name '\LAB_spectro_' name '_ColFilters.txt'], lab_spectro_cmp);
+    csvwrite([fld_name '\LAB_cam_' name '_ColFilters.txt'], lab_cam_cmp);
     
     save([fld_name '\DE_cmp'], 'DE_cmp');
     save([fld_name '\lab_spectro_cmp'], 'lab_spectro_cmp');

@@ -4,9 +4,12 @@
 
 % ouputs the transmittance spectra, CIEXYZ, CIELAB and DeltaE values
 
+% 09-11-19: DeltaE is a log-normal distribution, cahnge f_deltaE to the new
+% version f_deltaE_2 that takes care of this
+
 % 08-29-19: First code
 
-function t_dE_KWColFiltwcc(filter_id)
+function t_dE_ColFilt_wcc(filter_id)
 
     close all;
     
@@ -52,7 +55,7 @@ function t_dE_KWColFiltwcc(filter_id)
     [t_mean_spectro, t_std_spectro] = f_transmittance_PL3(s_filter_m, s_white_m,...
         s_filter_background_m, s_white_background_m, s_filter_s, s_white_s,...
         s_filter_background_s, s_white_background_s);
-
+    
     trans_spectro = [lambda_s; t_mean_spectro; t_std_spectro]';
     %% 3: Spectrometer: computes LAB (T -> XYZ -> LAB)
     % Prepares the illuminant
@@ -96,7 +99,8 @@ function t_dE_KWColFiltwcc(filter_id)
     % CIELAB space
     figure;
     step = 500;
-    [DE(1, 1), DE(1, 2)] = f_deltaE(LAB_spectro, LAB_cam, CovLAB_spectro, CovLAB_cam);
+%     [DE(1, 1), DE(1, 2)] = f_deltaE(LAB_spectro, LAB_cam, CovLAB_spectro, CovLAB_cam);
+    [DE(1, 1), DE(1, 2)] = f_deltaE_2(LAB_spectro, LAB_cam, CovLAB_spectro, CovLAB_cam);
     scatter3(LAB_array(1:step:end, 3), LAB_array(1:step:end, 2), LAB_array(1:step:end, 1), '.b'); hold on;
     scatter3(LAB_cam(3), LAB_cam(2), LAB_cam(1), 'r', 'Filled');
     scatter3(LAB_spectro(3), LAB_spectro(2), LAB_spectro(1), 'k', 'LineWidth', 2);
