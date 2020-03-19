@@ -1,3 +1,22 @@
+% 03-19-2020
+SURF: affine tranformation, no rotation
+
+>> movingReg.Transformation.T
+
+ans =
+
+  3×3 single matrix
+
+    1.0110    0.0125         0
+   -0.0131    1.0090         0
+ -182.3269  -76.2269    1.0000
+
+correlation_coeff =
+
+    0.9065
+
+% 03-18-2020
+
 Found 6658 candidates for BiomaxOrgan10_Bladder_M13_13_5x_gs.tif [0] (6658 maxima, 0 minima)
 Found 4358 candidates for truth_gs.tif [0] (4358 maxima, 0 minima)
 : Remaining inliers after RANSAC (AffineModel2D): 1743 of 1972 with average error 0.3605461401101245
