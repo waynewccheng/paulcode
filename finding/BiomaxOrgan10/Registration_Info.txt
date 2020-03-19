@@ -1,4 +1,12 @@
 % 03-19-2020
+I removed the rows corresponding to the black area in the registered image, resized the truh accordingly.
+
+New images are xxx_cropped.tif
+
+I computed the color difference ang did a box plot. 
+The median value is about 3.8
+
+% 03-19-2020
 SURF: affine tranformation, no rotation
 
 >> movingReg.Transformation.T
