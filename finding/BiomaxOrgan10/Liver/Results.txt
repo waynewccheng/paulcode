@@ -1,4 +1,16 @@
 
+% Registered image
+fixedRefObj = imref2d(size(Truth));
+movingRefObj = imref2d(size(Test));
+
+RegImg = imwarp(Test, movingRefObj, movingReg.Transformation, 'OutputView', fixedRefObj, 'SmoothEdges', true);
+
+figure;
+imshow(RegImg);
+
+% Transformation matrix
+Transfo_M = movingReg.Transformation.T
+
 Transfo_M =
 
   3×3 <a href="matlab:helpPopup single" style="font-weight:bold">single</a> matrix
@@ -7,6 +19,43 @@ Transfo_M =
    -0.0131    1.0093         0
  -134.1564  -30.1065    1.0000
 
+
+% Correlation coefficient
+Truth_gs = rgb2gray(Truth);
+RegImg_gs = rgb2gray(RegImg);
+correlation_coeff = corr2(Truth_gs, RegImg_gs)
+
 correlation_coeff =
 
     0.9394
+
+
+% Write registered image
+imwrite(RegImg, [imgTestName_r '_reg.tif']); %'BiomaxOrgan10_Bladder_M13_13_5x_reg.tif');
+
+% Remove the black areas in RegImg
+mask = (RegImg == 0);
+r_sum = sum(mask(:, :, 1), 2);
+r_index = find(r_sum == 0);
+Registration
+[Warning: File not found or permission denied] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('Registration', 'C:\Users\Paul_Lemaillet\Desktop\BiomaxOrgan10\MatlabCode\Registration.m', 9)" style="font-weight:bold">Registration</a> (<a href="matlab: opentoline('C:\Users\Paul_Lemaillet\Desktop\BiomaxOrgan10\MatlabCode\Registration.m',9,0)">line 9</a>)] 
+
+Transfo_M =
+
+  3×3 <a href="matlab:helpPopup single" style="font-weight:bold">single</a> matrix
+
+    1.0097    0.0128         0
+   -0.0131    1.0093         0
+ -134.1564  -30.1065    1.0000
+
+
+correlation_coeff =
+
+    0.9394
+
+
+correlation_coeff_cropped =
+
+    0.9394
+
